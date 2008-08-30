@@ -22,6 +22,7 @@
 
 <div class="d-con-box">
 
+<!-- introduction -->
 <p>Jeder <acronym title="Hypertext Preprocessor">PHP</acronym> Entwickler muss spätestens bei Variablen, deren Wert unbekannt ist oder bei Problemen während der Entwicklung die Anwendung Debuggen.</p>
 
 <p>Hat das Projekt eine bestimmte Größe erreicht, ist das Debuggen eine nicht zu unterschätzende Möglichkeit, das Verhalten der Applikation zu beobachten, und kann die die Entwicklungszeit erheblich verkürzen.</p>
@@ -32,6 +33,7 @@
 <p>Es gibt auch eine andere Art des Debuggens, das Verwenden von PHP eigenen Funktionen (<a href="http://www.php.net/var_dump" title="var_dump() Dokumentation bei php.net" rel="external">var_dump()</a>, <a href="http://www.php.net/print_r" title="print_r() Dokumentation bei php.net" rel="external">print_r()</a>). Eingesetzt in Webanwendungen, erhält man dadurch zwar auch wichtige Informationen, diese können aber, verteilt über die Webseite, das Layout der Ausgabe zerstören. Es geht aber auch anders, und zwar in Form von formatierter Ausgabe der Debuginformationen. Mein persönlicher Favorit dabei ist die <a href="http://www.symfony-project.org/book/1_0/16-Application-Management-Tools" title="Web Debug Toolbar des symfony Framework" rel="external">Web Debug Toolbar</a> des symfony Frameworks. Eine kleine Toolbar, die rechts Oben auf den Webseiten erscheint, und bei Klick aufklappt um dann alle wichtigen Informationen (Variablen, Konfiguration, Logs, Meldungen, usw.) zur Applikation liefert.</p>
 
 
+<!-- class mpdebug -->
 <h2>Klasse mpDebug</h2>
 <p>Inspiriert von der Web Debug Toolbar habe ich die Klasse mpDebug erstellt, die während der Verarbeitung einer Seite, über die Methoden übergebene Variablen sammelt und am Ende die Information zu den Variablen ausgeben kann. Die Ausgabe ist eine kleine Debugbar (mpWebDebug bar, siehe Screenshot 1), die im Browserfenster oben links erscheint. Bei Bedarf kann man die mpWebDebug bar mit einem Klick aufklappen, dann erscheint eine Liste mit Debuginformationen, die zur Laufzeit gesammelt wurden (Screenshot 2).</p>
 
@@ -52,6 +54,7 @@ Screenshot 3
 <br style="clear:both;" />
 
 
+<!-- features -->
 <h2>Features</h2>
 <ul>
     <li>Einfaches Debuggen von PHP-Variablen</li>
@@ -63,6 +66,7 @@ Screenshot 3
 </ul>
 
 
+<!-- installation -->
 <h2>Installation</h2>
 Die Installation ist denkbar einfach. Die Datei class.mpdebug.php in ein Ordner kopieren, und die Klasse per include_once/require_once einbinden. Die Klasse sollte eingebunden werden, bevor eine Ausgabe an den Client rausgeht, die Erklärung dazu kommt später.<br />
 <br />
@@ -88,6 +92,7 @@ $mpDebug->setConfig($options);
 </pre>
 
 
+<!-- description of conf -->
 <h3>Beschreibung der Konfiguration</h3>
 
 <p><strong>enable (bool):</strong><br />
@@ -109,13 +114,13 @@ Flag um leere Superglobale nicht auszugeben.</p>
 Definition eines "magischen Wortes", um z. B. ein per default deaktiviertes Debugging zu umgehen, überschreibt die Option 'enable'. Das kann z. B. auf einer Liveumgebung sinnvoll sein, um auf einfache Weise auf die gewünschten Informationen zu kommen.<br />
 HINWEIS:<br />
 Auf einer Liveumgebung hat eine Debugausgabe nichts verloren, sollte es dennoch eingesetzt werden, ist die Verwendung eines "magischen Wortes" ratsam, das nicht so leicht erraten werden kann.<br />
-Aktiviert wird das Debugging, durch das Hinzufügen des Parameters and die URL, z. B.
+Aktiviert wird das Debugging, durch das Hinzufügen des Parameters and die URL, z. B.</p>
 <pre class="code-box">http://domain/mypage.php?magic_word={my_magic_word}</pre>
-Wurde der korrekte Wert für 'magic_word' übergeben, wird ein temporäres Cookie gesetzt und die Ausgabe des mpWebDebug bars ist für eine Stunde aktiviert (oder bis das Browserfenster geschlossen wird).<br />
+<p>Wurde der korrekte Wert für 'magic_word' übergeben, wird ein temporäres Cookie gesetzt und die Ausgabe des mpWebDebug bars ist für eine Stunde aktiviert (oder bis das Browserfenster geschlossen wird).<br />
 Wird diese Option verwendet, muss die Klasse vor der Ausgabe von Inhalten an den Client eingebunden werden, weil das Setzen von Cookies einen header an den Client sendet. (optional)</p>
 
 <p><strong>user_func (string):</strong><br />
-Die zweite Möglichkeit, ein deaktiviertes Debugging zu umgehen, überschreibt auch die Option 'enable'. Hierbei kann der Name einer Funktion angegeben werden, dessen Rückgabewert (bool) dann die Aktivierung des Debuggings übernimmt. Beispiele:
+Die zweite Möglichkeit, ein deaktiviertes Debugging zu umgehen, überschreibt auch die Option 'enable'. Hierbei kann der Name einer Funktion angegeben werden, dessen Rückgabewert (bool) dann die Aktivierung des Debuggings übernimmt. Beispiele:</p>
 <pre class="code-box">
 // IP-Ueberpruefung, nur zur Veranaschaulichung gedacht, Beispiel ist nicht sicher.
 function myUserFunc() {
@@ -130,6 +135,7 @@ function myUserFunc() {
 </pre>
 
 
+<!-- examples -->
 <h2>Beispiele zur Verwendung</h2>
 <pre class="code-box">
 // Beispiel Text
@@ -172,6 +178,8 @@ echo $mpDebug->getResults(false);
 
 <p>Weitere Beispiele sind ab der Version 0.9 in der mitgelieferten example1.php und example2.php enthalten.</p>
 
+
+<!-- history -->
 <h2>History</h2>
 <ul>
     <li><strong>30.08.2008 (Version 0.9):</strong><br />
@@ -194,6 +202,8 @@ echo $mpDebug->getResults(false);
         First release</li>
 </ul>
 
+
+<!-- links -->
 <h2>Liste anderer Debugtools für PHP</h2>
 <ul>
     <li><a href="http://www.symfony-project.org/book/1_2/16-Application-Management-Tools#Web%20Debug%20Toolbar" title="symfony Web Debug Toolbar" rel="external">symfony Web Debug Toolbar</a></li>
