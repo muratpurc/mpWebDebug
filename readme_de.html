@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/Strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="de">
+<head>
+	<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=iso-8859-1" />
+	<title>mpWebDebug bar, die Web Debug Tollbar zum Debuggen von PHP Projekten</title>
+	<meta name="author" content="Murat Purc" />
+    <style type="text/css"><!--
+    body {font-family:arial; font-size:12pt;}
+    /* horizontal list */
+    ul.h { margin:0; list-style-type:none; heigth:1%; }
+    ul.h li { float:left; text-align:center; }
+    ul.threeitems li { width:33%; }
+    .code-box { padding:0.5em; background:#dadada; }
+    img { border:none; }
+    // --></style>
+</head>
+
+<body>
+
+<h1>mpWebDebug bar, die Web Debug Toolbar zum Debuggen von PHP Projekten</h1>
+
+<div class="d-con-box">
+
+<p>Jeder <acronym title="Hypertext Preprocessor">PHP</acronym> Entwickler muss spätestens bei Variablen, deren Wert unbekannt ist oder bei Problemen während der Entwicklung die Anwendung Debuggen.</p>
+
+<p>Hat das Projekt eine bestimmte Größe erreicht, ist das Debuggen eine nicht zu unterschätzende Möglichkeit, das Verhalten der Applikation zu beobachten, und kann die die Entwicklungszeit erheblich verkürzen.</p>
+
+<p>Wer eine moderne <acronym title="Integrated Development Environment">IDE</acronym> wie z. B. Eclipse verwendet, kann mit dem <acronym title="PHP Development Tools">PDT</acronym>-Plugin 
+    und <a href="http://www.xdebug.org/" title="Xdebug" rel="external">Xdebug</a> (Ist in PDT integriert), oder dem <a href="http://www.zend.com/en/community/pdt" title="Eclipse PHP Development Tools Seite" rel="external">Zend Executable Debugger</a> die Applikation auf professionell debuggen. Dazu gehört das setzen von Haltepunkten (Breakpoints), Inspizieren von Daten über den Variablenexplorer, das schrittweise Abarbeiten des Codes, sowie die Möglichkeit zum Modifizieren von Variablen.</p>
+
+<p>Es gibt auch eine andere Art des Debuggens, das Verwenden von PHP eigenen Funktionen (<a href="http://www.php.net/var_dump" title="var_dump() Dokumentation bei php.net" rel="external">var_dump()</a>, <a href="http://www.php.net/print_r" title="print_r() Dokumentation bei php.net" rel="external">print_r()</a>). Eingesetzt in Webanwendungen, erhält man dadurch zwar auch wichtige Informationen, diese können aber, verteilt über die Webseite, das Layout der Ausgabe zerstören. Es geht aber auch anders, und zwar in Form von formatierter Ausgabe der Debuginformationen. Mein persönlicher Favorit dabei ist die <a href="http://www.symfony-project.org/book/1_0/16-Application-Management-Tools" title="Web Debug Toolbar des symfony Framework" rel="external">Web Debug Toolbar</a> des symfony Frameworks. Eine kleine Toolbar, die rechts Oben auf den Webseiten erscheint, und bei Klick aufklappt um dann alle wichtigen Informationen (Variablen, Konfiguration, Logs, Meldungen, usw.) zur Applikation liefert.</p>
+
+
+<h2>Klasse mpDebug</h2>
+<p>Inspiriert von der Web Debug Toolbar habe ich die Klasse mpDebug erstellt, die während der Verarbeitung einer Seite, über die Methoden übergebene Variablen sammelt und am Ende die Information zu den Variablen ausgeben kann. Die Ausgabe ist eine kleine Debugbar (mpWebDebug bar, siehe Screenshot 1), die im Browserfenster oben links erscheint. Bei Bedarf kann man die mpWebDebug bar mit einem Klick aufklappen, dann erscheint eine Liste mit Debuginformationen, die zur Laufzeit gesammelt wurden (Screenshot 2).</p>
+
+<ul class="h threeitems">
+    <li>
+        <a rel="lightbox" href="./img/mpwebdebugbar_screenshot_1.jpg" title="mpWebDebug bar"><img longdesc="upload/longdesc/projects_screenshots.htm" width="200" src="./img/mpwebdebugbar_screenshot_1_s.jpg" alt="Screenshot: mpWebDebug bar" height="150" /></a><br />
+Screenshot 1
+    </li>
+    <li>
+        <a rel="lightbox" href="./img/mpwebdebugbar_screenshot_2.jpg" title="mpWebDebug bar geöffnet"><img longdesc="upload/longdesc/projects_screenshots.htm" width="200" src="./img/mpwebdebugbar_screenshot_2_s.jpg" alt="Screenshot: mpWebDebug bar geöffnet" height="150" /></a><br />
+Screenshot 2
+    </li>
+    <li>
+        <a rel="lightbox" href="./img/mpwebdebugbar_screenshot_3.jpg" title="mpWebDebug bar Debugbeispiel"><img longdesc="upload/longdesc/projects_screenshots.htm" width="200" src="./img/mpwebdebugbar_screenshot_3_s.jpg" alt="Screenshot: mpWebDebug bar Debugbeispiel" height="150" /></a><br />
+Screenshot 3
+    </li>
+</ul>
+<br style="clear:both;" />
+
+
+<h2>Features</h2>
+<ul>
+    <li>Einfaches Debuggen von PHP-Variablen</li>
+    <li>Aktivieren/Deaktivieren der Ausgabe</li>
+    <li>Formatierte Ausgabe der Debuginformationen</li>
+    <li>Zerstört das Layout nicht</li>
+    <li>Keine Addons/Plugins für Browser nötig</li>
+    <li>Funktioniert bei allen modernen Browsern, die JavaScript 1.5 und CSS 2.0 unterstützen</li>
+</ul>
+
+
+<h2>Installation</h2>
+Die Installation ist denkbar einfach. Die Datei class.mpdebug.php in ein Ordner kopieren, und die Klasse per include_once/require_once einbinden. Die Klasse sollte eingebunden werden, bevor eine Ausgabe an den Client rausgeht, die Erklärung dazu kommt später.<br />
+<br />
+Nach dem Einbinden, sollte auch gleich die Konfiguration gesetzt werden.
+
+<pre class="code-box">
+// ggf. den Pfad zum Ordner angeben
+require_once('class.mpdebug.php');
+
+// Instanz des mpDebug Objektes holen
+$mpDebug = mpDebug::getInstance();
+
+// Konfiguration setzen
+$options = array(
+    'enable'                    => true,
+    'ressource_urls'            => array('/path_to_logs/error.txt'),
+    'dump_super_globals'        => array('$_GET', '$_POST', '$_COOKIE', '$_SESSION'),
+    'ignore_empty_superglobals' => true,
+    'magic_word'                => 'foobar',
+    'user_func'                 => 'myUserFunc'
+);
+$mpDebug->setConfig($options);
+</pre>
+
+
+<h3>Beschreibung der Konfiguration</h3>
+
+<p><strong>enable (bool):</strong><br />
+Flag zum Aktivieren von mpDebug.</p>
+
+<p><strong>ressource_urls (array):</strong><br />
+Liste von Pfaden zu Dateien, zu denen am Ende der mpWebDebug bar verlinkt werden soll. Das kann z. B. eine Errorlog sein oder eine Protokolldatei sein, dessen Inhalt wichtig sein kann. (optional)</p>
+
+<p><strong>dump_super_globals (array):</strong><br />
+Liste von PHP <a href="http://www.php.net/manual/en/language.variables.predefined.php#language.variables.superglobals" title="Superglobale arrays bei php.net" rel="external">Superglobalen</a>, deren Inhalt ausgegeben werden soll. Es können alle Superglobale angegeben werden. Außnahme ist $GLOBALS, die eine Referenz zur jeder im globalen Bereich zur Verfügng stehenden Variable hat - das kann viel sein. Per default wird immer der Inhalt von $_GET, $_POST, $_COOKIE und $_SESSION ausgegeben. Soll keine Superglobale ausgegeben werden, kann ein leeres array zugewiesen werden. (optional)<br />
+<br />
+Die Ausgabe von Superglobalen $_POST und $_SESSION ist aus Sicherheitsgründen auf max. 512 KB große Inhalte beschränkt.
+</p>
+
+<p><strong>ignore_empty_superglobals (bool):</strong><br />
+Flag um leere Superglobale nicht auszugeben.</p>
+
+<p><strong>magic_word (string):</strong><br />
+Definition eines "magischen Wortes", um z. B. ein per default deaktiviertes Debugging zu umgehen, überschreibt die Option 'enable'. Das kann z. B. auf einer Liveumgebung sinnvoll sein, um auf einfache Weise auf die gewünschten Informationen zu kommen.<br />
+HINWEIS:<br />
+Auf einer Liveumgebung hat eine Debugausgabe nichts verloren, sollte es dennoch eingesetzt werden, ist die Verwendung eines "magischen Wortes" ratsam, das nicht so leicht erraten werden kann.<br />
+Aktiviert wird das Debugging, durch das Hinzufügen des Parameters and die URL, z. B.
+<pre class="code-box">http://domain/mypage.php?magic_word={my_magic_word}</pre>
+Wurde der korrekte Wert für 'magic_word' übergeben, wird ein temporäres Cookie gesetzt und die Ausgabe des mpWebDebug bars ist für eine Stunde aktiviert (oder bis das Browserfenster geschlossen wird).<br />
+Wird diese Option verwendet, muss die Klasse vor der Ausgabe von Inhalten an den Client eingebunden werden, weil das Setzen von Cookies einen header an den Client sendet. (optional)</p>
+
+<p><strong>user_func (string):</strong><br />
+Die zweite Möglichkeit, ein deaktiviertes Debugging zu umgehen, überschreibt auch die Option 'enable'. Hierbei kann der Name einer Funktion angegeben werden, dessen Rückgabewert (bool) dann die Aktivierung des Debuggings übernimmt. Beispiele:
+<pre class="code-box">
+// IP-Ueberpruefung, nur zur Veranaschaulichung gedacht, Beispiel ist nicht sicher.
+function myUserFunc() {
+    return ($_SERVER['REMOTE_ADDR'] == '66.249.72.19') ? true : false;
+}
+
+// Beispiel mit Ueberpruefung der Usergruppe
+function myUserFunc() {
+    $group = UserGroup::getInstance();
+    return ($group->isMember(UserGroup::ADMIN)) ? true : false;
+}
+</pre>
+
+
+<h2>Beispiele zur Verwendung</h2>
+<pre class="code-box">
+// Beispiel Text
+$foo = 'Text';
+$mpDebug->addDebug($foo, 'Content of foo');
+
+// Beispiel Array
+$bar = array('win', 'nix', 'apple');
+$mpDebug->addDebug($bar, 'win, nix and apple', __FILE__, __LINE__);
+
+// Beispiel Objekt
+class User {
+    const MR  = 'Mr.';
+    const MRS = 'Mrs.';
+    private $firstname;
+    private $lastname;
+    private $gender;
+    function __construct($firstname, $lastname, $gender){
+        $this->firstname = $firstname;
+        $this->lastname  = $lastname;
+        $this->gender    = ($gender == self::MR) ? self::MR : self::MRS;
+    }
+    function greet() {
+        return 'Hi ' . $this->gender . ' ' . $this->lastname;
+    }
+}
+
+$user = new User('John O.', 'Public', User::MR);
+$mpDebug->addDebug($user, 'User object');
+
+// Beispiel text 2
+$greet = $user->greet();
+$mpDebug->addDebug($greet, 'Greet user');
+
+// Am Ende der Seite ausgeben. Parameter true liefert debug zurueck, false gibt sie direkt aus
+echo $mpDebug->getResults(false);
+</pre>
+
+<p>Die Ausgabe der Debuginformationen sollte am Ende der Seite noch vor dem schließenden Body-Tag geschehen. Es funktioniert zwar auch, wenn die Debuginfos nach dem schließenden html-Tag ausgegeben werden, besser ist die Ausgabe vor dem schließenden Body-Tag.</p>
+
+<p>Weitere Beispiele sind ab der Version 0.9 in der mitgelieferten example1.php und example2.php enthalten.</p>
+
+<h2>History</h2>
+<ul>
+    <li><strong>30.08.2008 (Version 0.9):</strong><br />
+        changed: Port to PHP5<br />
+        changed: Usage of singleton pattern instead creating a instance in global scope<br />
+        added: New method to get CSS/JS code of mpWebDebug bar<br />
+    </li>
+    <li><strong>30.05.2008 (Version 0.8):</strong><br />
+        bugfix: id-Attributes starting with numeric value<br />
+        added: Enable debugging with magic word<br />
+        added: Control enabling with userdefined function<br />
+    </li>
+    <li><strong>17.05.2008 (Version 0.7):</strong><br />
+        added: Setting of configuration<br />
+        added: Check size of superglobals<br />
+        added: Output of variables with state "is_null", "empty" and "!isset"<br />
+        changed: Redesign of JavaScript Code<br />
+    </li>
+    <li><strong>13.02.2007:</strong><br />
+        First release</li>
+</ul>
+
+<h2>Liste anderer Debugtools für PHP</h2>
+<ul>
+    <li><a href="http://www.symfony-project.org/book/1_2/16-Application-Management-Tools#Web%20Debug%20Toolbar" title="symfony Web Debug Toolbar" rel="external">symfony Web Debug Toolbar</a></li>
+    <li><a href="http://krumo.sourceforge.net/" title="KRUMO" rel="external">KRUMO</a></li>
+    <li><a href="http://dbug.ospinto.com/" title="dBug" rel="external">dBug</a></li>
+    <li><a href="http://www.debugconsole.de/" title="debugConsole" rel="external">debugConsole</a></li>
+    <li><a href="http://www.firephp.org/" title="FirePHP" rel="external">FirePHP</a></li>
+</ul>
+
+</div>
+
+<hr />
+
+<div>
+    Autor: Murat Purc, <a href="http://www.purc.de/" title="purc.de" rel="external">www.purc.de</a><br />
+    Lizenz: <a href="http://www.gnu.org/licenses/gpl-2.0.html" title="GNU General Public License, version 2" rel="external">GNU General Public License, version 2</a><br />
+</div>
+
+</body>
+</html>
