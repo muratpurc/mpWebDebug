@@ -16,10 +16,10 @@
  * If debugging is enabled, the output will be a small collapsable mpWebDebug bar
  * at the top left corner of the page.
  * 
- * Inspired by the Web Debug Toolbar of symfony Framework whith a simple way to 
- * provide debug informations during development.
+ * Inspired by the Web Debug Toolbar of symfony Framework which provides a simple way to display 
+ * debug informations during development.
  *
- * See example1.php and example1.php in delivered package.
+ * See example1.php and example2.php in delivered package.
  *
  * Usage:
  * <code>
@@ -32,9 +32,10 @@
  * // set configuration
  * $options = array(
  *     'enable'                    => true,
- *     'ressource_urls'            => array('/path_to_logs/error.txt'), // this is a not working exaqmple ;-)
+ *     'ressource_urls'            => array('/path_to_logs/error.txt'), // this is a not working example ;-)
  *     'dump_super_globals'        => array('$_GET', '$_POST', '$_COOKIE', '$_SESSION'),
  *     'ignore_empty_superglobals' => true,
+ *     'max_superglobals_size'     => 512
  * );
  * $mpDebug->setConfig($options);
  * 
@@ -53,7 +54,7 @@
  * @author      Murat Purc <murat@purc.de>
  * @copyright   © Murat Purc 2008
  * @license     http://www.gnu.org/licenses/gpl-2.0.html - GNU General Public License, version 2
- * @version     0.9
+ * @version     0.9.1
  * @package     Development
  * @subpackage  Debugging
  */
@@ -119,6 +120,12 @@ class mpDebug {
      */
     private $_ignoreEmptySuperglobals = false;
     
+    /**
+     * Maximum allowed superglobal size in KB (used for $_POST and $_SESSION).
+     * @var  int
+     */
+    private $_maxSuperglobalSize = 512;
+    
     
     /**
      * Constructor
@@ -164,6 +171,9 @@ class mpDebug {
      * // Flag to ignore dumpoutput of empty superglobals
      * $options['ignore_empty_superglobals'] = true;
      * 
+     * // Maximum allowed superglobal size in KB (used for $_POST and $_SESSION)
+     * $options['max_superglobals_size'] = 512;
+     * 
      * // Magic word to use, if you want to overwrite $options['enable'] option. You can force debugging
      * // by using this option. In this case, you can enable it adding the parameter 
      * // magic_word={my_magic_word} to the URL, e. g. 
@@ -206,6 +216,11 @@ class mpDebug {
         // auto dump of globals or superglobals
         if (isset($options['dump_super_globals']) && is_array($options['dump_super_globals'])) {
         	$this->_dumpSuperglobals = $options['dump_super_globals'];
+        }
+        
+        // auto dump of globals or superglobals
+        if (isset($options['max_superglobals_size']) && (int) $options['max_superglobals_size'] > 0) {
+        	$this->_maxSuperglobalSize = (int) $options['max_superglobals_size'];
         }
         
         // ignore dumping of empty superglobals
@@ -655,7 +670,7 @@ var mpWebDebugger = {
     
     
     /**
-     * Returns approximate size of superglobal in kb if size is > 512 kb or false
+     * Returns approximate size of superglobal in kb if size is > defined max superglobal size or false
      *
      * @param   mixed  $sglobal
      * @return  mixed  Size in kb or false
@@ -666,8 +681,9 @@ var mpWebDebugger = {
         print_r($sglobal);
         $dump = ob_get_contents();
         ob_end_clean();
-        if (strlen($dump) > 524288) {
-        	return ceil((strlen($dump) / 1024));
+        $sizeInKB = ceil((strlen($dump) / 1024));
+        if ($sizeInKB > $this->_maxSuperglobalSize) {
+        	return $sizeInKB;
         } else {
         	return false;
         }

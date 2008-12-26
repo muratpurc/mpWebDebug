@@ -2,7 +2,9 @@
 /**
  * Example usage of mpWebDebug bar.
  *
- * This Script shows the 
+ * This Script shows the usage of separated output of debug contents, the css-/js-code for head-part
+ * and the rest for content.
+ * 
  * @author      Murat Purc <murat@purc.de>
  * @copyright   © Murat Purc 2008
  * @package     Development
@@ -27,6 +29,7 @@ $options = array(
     'ressource_urls'            => array('/path_to_logs/error.txt'), // this is a not working exaqmple ;-)
     'dump_super_globals'        => array('$_GET', '$_POST', '$_COOKIE', '$_SESSION'),
     'ignore_empty_superglobals' => true,
+    'max_superglobals_size'     => 512
 );
 $mpDebug->setConfig($options);
 

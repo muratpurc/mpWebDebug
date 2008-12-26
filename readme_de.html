@@ -85,6 +85,7 @@ $options = array(
     'ressource_urls'            => array('/path_to_logs/error.txt'),
     'dump_super_globals'        => array('$_GET', '$_POST', '$_COOKIE', '$_SESSION'),
     'ignore_empty_superglobals' => true,
+    'max_superglobals_size'     => 512,
     'magic_word'                => 'foobar',
     'user_func'                 => 'myUserFunc'
 );
@@ -104,11 +105,14 @@ Liste von Pfaden zu Dateien, zu denen am Ende der mpWebDebug bar verlinkt werden
 <p><strong>dump_super_globals (array):</strong><br />
 Liste von PHP <a href="http://www.php.net/manual/en/language.variables.predefined.php#language.variables.superglobals" title="Superglobale arrays bei php.net" rel="external">Superglobalen</a>, deren Inhalt ausgegeben werden soll. Es können alle Superglobale angegeben werden. Außnahme ist $GLOBALS, die eine Referenz zur jeder im globalen Bereich zur Verfügng stehenden Variable hat - das kann viel sein. Per default wird immer der Inhalt von $_GET, $_POST, $_COOKIE und $_SESSION ausgegeben. Soll keine Superglobale ausgegeben werden, kann ein leeres array zugewiesen werden. (optional)<br />
 <br />
-Die Ausgabe von Superglobalen $_POST und $_SESSION ist aus Sicherheitsgründen auf max. 512 KB große Inhalte beschränkt.
-</p>
+Die Ausgabe von Superglobalen $_POST und $_SESSION ist aus Sicherheitsgründen per default auf max. 512 KB große Inhalte beschränkt. 
+Der Wert kann über die Option 'max_superglobals_size' geändert werden.</p>
 
 <p><strong>ignore_empty_superglobals (bool):</strong><br />
 Flag um leere Superglobale nicht auszugeben.</p>
+
+<p><strong>max_superglobals_size (int):</strong><br />
+Maximale Größe in KB für die auszugebenden Superglobalen $_POST und $_SESSION. Nur Superglobale $_POST und $_SESSION, deren Inhalt kleiner als die angegenene Größe ist, werden ausgegeben.</p>
 
 <p><strong>magic_word (string):</strong><br />
 Definition eines "magischen Wortes", um z. B. ein per default deaktiviertes Debugging zu umgehen, überschreibt die Option 'enable'. Das kann z. B. auf einer Liveumgebung sinnvoll sein, um auf einfache Weise auf die gewünschten Informationen zu kommen.<br />
@@ -182,6 +186,9 @@ echo $mpDebug->getResults(false);
 <!-- history -->
 <h2>History</h2>
 <ul>
+    <li><strong>26.12.2008 (Version 0.9.1):</strong><br />
+        added: Configuration for max size of debuggable superglobals<br />
+    </li>
     <li><strong>30.08.2008 (Version 0.9):</strong><br />
         changed: Port to PHP5<br />
         changed: Usage of singleton pattern instead creating a instance in global scope<br />

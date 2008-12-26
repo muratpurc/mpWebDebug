@@ -26,6 +26,7 @@ $options = array(
     'ressource_urls'            => array('/path_to_logs/error.txt'), // this is a not working exaqmple ;-)
     'dump_super_globals'        => array('$_GET', '$_POST', '$_COOKIE', '$_SESSION'),
     'ignore_empty_superglobals' => true,
+    'max_superglobals_size'     => 512
 );
 $mpDebug->setConfig($options);
 
