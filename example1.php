@@ -3,7 +3,7 @@
  * Example usage of mpWebDebug bar.
  * 
  * @author      Murat Purc <murat@purc.de>
- * @copyright   © Murat Purc 2008
+ * @copyright   © Murat Purc 2008-2009
  * @package     Development
  * @subpackage  Debugging
  */
@@ -23,7 +23,7 @@ $mpDebug = mpDebug::getInstance();
 // set configuration
 $options = array(
     'enable'                    => true,
-    'ressource_urls'            => array('/path_to_logs/error.txt'), // this is a not working exaqmple ;-)
+    'ressource_urls'            => array('/path_to_logs/error.txt'), // this is a not working example ;-)
     'dump_super_globals'        => array('$_GET', '$_POST', '$_COOKIE', '$_SESSION'),
     'ignore_empty_superglobals' => true,
     'max_superglobals_size'     => 512
@@ -76,7 +76,7 @@ $emptyVar = '';
 $mpDebug->addDebug($emptyVar, 'Empty variable');
 
 
-// debug: !isset example, commentent due to thrown php notice message
+// debug: !isset example, commented due to thrown php notice message
 #$mpDebug->addDebug($notIssetVar, 'This variable is not set');
 
 

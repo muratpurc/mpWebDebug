@@ -103,7 +103,7 @@ Flag zum Aktivieren von mpDebug.</p>
 Liste von Pfaden zu Dateien, zu denen am Ende der mpWebDebug bar verlinkt werden soll. Das kann z. B. eine Errorlog sein oder eine Protokolldatei sein, dessen Inhalt wichtig sein kann. (optional)</p>
 
 <p><strong>dump_super_globals (array):</strong><br />
-Liste von PHP <a href="http://www.php.net/manual/en/language.variables.predefined.php#language.variables.superglobals" title="Superglobale arrays bei php.net" rel="external">Superglobalen</a>, deren Inhalt ausgegeben werden soll. Es können alle Superglobale angegeben werden. Außnahme ist $GLOBALS, die eine Referenz zur jeder im globalen Bereich zur Verfügng stehenden Variable hat - das kann viel sein. Per default wird immer der Inhalt von $_GET, $_POST, $_COOKIE und $_SESSION ausgegeben. Soll keine Superglobale ausgegeben werden, kann ein leeres array zugewiesen werden. (optional)<br />
+Liste von PHP <a href="http://www.php.net/manual/en/language.variables.predefined.php#language.variables.superglobals" title="Superglobale arrays bei php.net" rel="external">Superglobalen</a>, deren Inhalt ausgegeben werden soll. Es können alle Superglobale angegeben werden. Außnahme ist $GLOBALS, die eine Referenz zur jeder im globalen Bereich zur Verfügung stehenden Variable hat - das kann viel sein. Per default wird immer der Inhalt von $_GET, $_POST, $_COOKIE und $_SESSION ausgegeben. Soll keine Superglobale ausgegeben werden, kann ein leeres array zugewiesen werden. (optional)<br />
 <br />
 Die Ausgabe von Superglobalen $_POST und $_SESSION ist aus Sicherheitsgründen per default auf max. 512 KB große Inhalte beschränkt. 
 Der Wert kann über die Option 'max_superglobals_size' geändert werden.</p>
@@ -118,15 +118,15 @@ Maximale Größe in KB für die auszugebenden Superglobalen $_POST und $_SESSION. N
 Definition eines "magischen Wortes", um z. B. ein per default deaktiviertes Debugging zu umgehen, überschreibt die Option 'enable'. Das kann z. B. auf einer Liveumgebung sinnvoll sein, um auf einfache Weise auf die gewünschten Informationen zu kommen.<br />
 HINWEIS:<br />
 Auf einer Liveumgebung hat eine Debugausgabe nichts verloren, sollte es dennoch eingesetzt werden, ist die Verwendung eines "magischen Wortes" ratsam, das nicht so leicht erraten werden kann.<br />
-Aktiviert wird das Debugging, durch das Hinzufügen des Parameters and die URL, z. B.</p>
+Aktiviert wird das Debugging, durch das Hinzufügen des Parameters an die URL, z. B.</p>
 <pre class="code-box">http://domain/mypage.php?magic_word={my_magic_word}</pre>
 <p>Wurde der korrekte Wert für 'magic_word' übergeben, wird ein temporäres Cookie gesetzt und die Ausgabe des mpWebDebug bars ist für eine Stunde aktiviert (oder bis das Browserfenster geschlossen wird).<br />
-Wird diese Option verwendet, muss die Klasse vor der Ausgabe von Inhalten an den Client eingebunden werden, weil das Setzen von Cookies einen header an den Client sendet. (optional)</p>
+Wird diese Option verwendet, muss die Klasse vor der Ausgabe von Inhalten an den Client eingebunden werden, weil das Setzen von Cookies einen HTTP-Header an den Client sendet. (optional)</p>
 
 <p><strong>user_func (string):</strong><br />
 Die zweite Möglichkeit, ein deaktiviertes Debugging zu umgehen, überschreibt auch die Option 'enable'. Hierbei kann der Name einer Funktion angegeben werden, dessen Rückgabewert (bool) dann die Aktivierung des Debuggings übernimmt. Beispiele:</p>
 <pre class="code-box">
-// IP-Ueberpruefung, nur zur Veranaschaulichung gedacht, Beispiel ist nicht sicher.
+// IP-Ueberpruefung, nur zur Veranschaulichung gedacht, Beispiel ist nicht sicher.
 function myUserFunc() {
     return ($_SERVER['REMOTE_ADDR'] == '66.249.72.19') ? true : false;
 }
@@ -174,7 +174,7 @@ $mpDebug->addDebug($user, 'User object');
 $greet = $user->greet();
 $mpDebug->addDebug($greet, 'Greet user');
 
-// Am Ende der Seite ausgeben. Parameter true liefert debug zurueck, false gibt sie direkt aus
+// Am Ende der Seite ausgeben. Parameter true liefert Inhalt des Debuggers zurueck, false gibt es direkt aus
 echo $mpDebug->getResults(false);
 </pre>
 
@@ -186,26 +186,26 @@ echo $mpDebug->getResults(false);
 <!-- history -->
 <h2>History</h2>
 <ul>
-    <li><strong>26.12.2008 (Version 0.9.1):</strong><br />
+    <li><strong>2008-12-26 (Version 0.9.1):</strong><br />
         added: Configuration for max size of debuggable superglobals<br />
     </li>
-    <li><strong>30.08.2008 (Version 0.9):</strong><br />
+    <li><strong>2008-08-30 (Version 0.9):</strong><br />
         changed: Port to PHP5<br />
         changed: Usage of singleton pattern instead creating a instance in global scope<br />
         added: New method to get CSS/JS code of mpWebDebug bar<br />
     </li>
-    <li><strong>30.05.2008 (Version 0.8):</strong><br />
+    <li><strong>2008-05-30 (Version 0.8):</strong><br />
         bugfix: id-Attributes starting with numeric value<br />
         added: Enable debugging with magic word<br />
         added: Control enabling with userdefined function<br />
     </li>
-    <li><strong>17.05.2008 (Version 0.7):</strong><br />
+    <li><strong>2008-05-17 (Version 0.7):</strong><br />
         added: Setting of configuration<br />
         added: Check size of superglobals<br />
         added: Output of variables with state "is_null", "empty" and "!isset"<br />
         changed: Redesign of JavaScript Code<br />
     </li>
-    <li><strong>13.02.2007:</strong><br />
+    <li><strong>2007-02-13:</strong><br />
         First release</li>
 </ul>
 
