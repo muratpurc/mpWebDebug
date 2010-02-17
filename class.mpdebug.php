@@ -2,10 +2,11 @@
 /**
  * Contains a debug class used as a helper during development.
  *
- * @author      Murat Purc <murat@purc.de>
- * @copyright   © Murat Purc 2008-2009
  * @package     Development
  * @subpackage  Debugging
+ * @author      Murat Purc <murat@purc.de>
+ * @copyright   Copyright (c) 2008-2010 Murat Purc (http://www.purc.de)
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html - GNU General Public License, version 2
  */
 
 
@@ -51,12 +52,12 @@
  * echo $mpDebug->getResults();
  * </code>
  *
- * @author      Murat Purc <murat@purc.de>
- * @copyright   © Murat Purc 2008-2009
- * @license     http://www.gnu.org/licenses/gpl-2.0.html - GNU General Public License, version 2
- * @version     0.9.2
  * @package     Development
  * @subpackage  Debugging
+ * @author      Murat Purc <murat@purc.de>
+ * @copyright   Copyright (c) 2008-2010 Murat Purc (http://www.purc.de)
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html - GNU General Public License, version 2
+ * @version     0.9.2
  */
 class mpDebug
 {
@@ -395,7 +396,7 @@ class mpDebug
         $dumpOutput .= '
 <span class="info"><br />
     NOTE: This debug output should be visible only on dev environment<br />
-    &copy; Murat Purc 2008-2009 &bull; <a href="http://www.purc.de/">www.purc.de</a>
+    &copy; Murat Purc 2008-2010 &bull; <a href="http://www.purc.de/">www.purc.de</a>
 </span>';
         $dumpOutput .= $this->_endOutput();
 
@@ -739,7 +740,8 @@ var mpWebDebug = {
         }
     }
 
-    /**
+
+	/**
      * Creates a unique id used as id-Attribute for HTML elements using timer and internal counter.
      *
      * @return  string  Generated id

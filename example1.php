@@ -2,10 +2,11 @@
 /**
  * Example usage of mpWebDebug bar.
  * 
- * @author      Murat Purc <murat@purc.de>
- * @copyright   © Murat Purc 2008-2009
  * @package     Development
  * @subpackage  Debugging
+ * @author      Murat Purc <murat@purc.de>
+ * @copyright   Copyright (c) 2008-2010 Murat Purc (http://www.purc.de)
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html - GNU General Public License, version 2
  */
 
 
