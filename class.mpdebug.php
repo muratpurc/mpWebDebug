@@ -1,12 +1,15 @@
 <?php
+
+namespace Purc\MpWebDebug;
+
 /**
  * Contains a debug class used as a helper during development.
  *
  * @package     Development
  * @subpackage  Debugging
- * @author      Murat Purc <murat@purc.de>
- * @copyright   Copyright (c) 2008-2010 Murat Purc (http://www.purc.de)
- * @license     http://www.gnu.org/licenses/gpl-2.0.html - GNU General Public License, version 2
+ * @author      Murat Purç <murat@purc.de>
+ * @copyright   Copyright (c) 2008-2019 Murat Purç (http://www.purc.de)
+ * @license     https://www.gnu.org/licenses/gpl-2.0.html - GNU General Public License, version 2
  */
 
 
@@ -14,11 +17,11 @@
  * Debug class. Provides a possibility to debug variables without destroying the page
  * output.
  *
- * If debugging is enabled, the output will be a small collapsable mpWebDebug bar
+ * If debugging is enabled, the output will be a small collapsible mpWebDebug bar
  * at the top left corner of the page.
  *
  * Inspired by the Web Debug Toolbar of symfony Framework which provides a simple way to display
- * debug informations during development.
+ * debug information during development.
  *
  * See example1.php and example2.php in delivered package.
  *
@@ -31,19 +34,19 @@
  * $mpDebug = mpDebug::getInstance();
  *
  * // set configuration
- * $options = array(
+ * $options = [
  *     'enable'                    => true,
- *     'ressource_urls'            => array('/path_to_logs/error.txt'), // this is a not working example ;-)
- *     'dump_super_globals'        => array('$_GET', '$_POST', '$_COOKIE', '$_SESSION'),
+ *     'ressource_urls'            => ['/path_to_logs/error.txt'], // this is a not working example ;-)
+ *     'dump_super_globals'        => ['$_GET', '$_POST', '$_COOKIE', '$_SESSION'],
  *     'ignore_empty_superglobals' => true,
  *     'max_superglobals_size'     => 512
- * );
+ * ];
  * $mpDebug->setConfig($options);
  *
  * $foo = 'Text';
  * $mpDebug->addDebug($foo, 'Content of foo');
  *
- * $bar = array('win', 'nix', 'apple');
+ * $bar = ['win', 'nix', 'apple'];
  * $mpDebug->addDebug($bar, 'win, nix and apple', __FILE__, __LINE__);
  *
  * ...
@@ -54,19 +57,13 @@
  *
  * @package     Development
  * @subpackage  Debugging
- * @author      Murat Purc <murat@purc.de>
- * @copyright   Copyright (c) 2008-2010 Murat Purc (http://www.purc.de)
- * @license     http://www.gnu.org/licenses/gpl-2.0.html - GNU General Public License, version 2
+ * @author      Murat Purç <murat@purc.de>
+ * @copyright   Copyright (c) 2008-2019 Murat Purç (http://www.purc.de)
+ * @license     https://www.gnu.org/licenses/gpl-2.0.html - GNU General Public License, version 2
  * @version     0.9.2
  */
-class mpDebug
+class Debugger
 {
-
-    /**
-     * Self instance
-     * @var  mpDebug
-     */
-    static private $_instance;
 
     /**
      * Array to store dumps of variables, as follows:
@@ -78,7 +75,7 @@ class mpDebug
      * </code>
      * @var  array
      */
-    private $_dumpCache = array();
+    private $_dumpCache = [];
 
     /**
      * Flag to activate debug
@@ -108,13 +105,13 @@ class mpDebug
      * Debug links absolute from document-root, e. g. to log files or other docs.
      * @var  array
      */
-    private $_resUrls = array();
+    private $_resUrls = [];
 
     /**
      * List of superglobals names to dump automatically.
      * @var  array
      */
-    private $_dumpSuperglobals = array('$_GET', '$_POST', '$_COOKIE', '$_SESSION');
+    private $_dumpSuperglobals = ['$_GET', '$_POST', '$_COOKIE', '$_SESSION'];
 
     /**
      * Ignore dumping of empty superglobals.
@@ -131,9 +128,11 @@ class mpDebug
 
     /**
      * Constructor
+     * @param  array  $options  Options array
+     * @see  Debugger::setConfig()
      * @return  void
      */
-    protected function __construct()
+    public function __construct(array $options = [])
     {
         if ($this->_trimDocRoot == true) {
             $this->_docRoot = $_SERVER['DOCUMENT_ROOT'];
@@ -141,30 +140,10 @@ class mpDebug
                  $this->_docRoot = str_replace(DIRECTORY_SEPARATOR, '/', $this->_docRoot);
              }
         }
-    }
 
-
-    /**
-     * Prevent cloning
-     * @return  void
-     */
-    private function __clone()
-    {
-        // donut
-    }
-
-
-    /**
-     * Returns a instance of mpDebug (singleton implementation)
-     *
-     * @return  mpDebug
-     */
-    public static function getInstance()
-    {
-        if (self::$_instance == null) {
-            self::$_instance = new self();
+        if (!empty($options)) {
+            $this->setConfig($options);
         }
-        return self::$_instance;
     }
 
 
@@ -177,13 +156,13 @@ class mpDebug
      * $options['enable'] = true;
      *
      * // Array of ressource files which will be linked at the end of debug output. You can add e. g.
-     * // the HTML path to existing logfiles.
-     * $options['ressource_urls'] = array('/contenido/logs/errorlog.txt', '/cms/logs/my_own_log.txt');
+     * // the HTML path to existing log files.
+     * $options['ressource_urls'] = ['/path/to/log_file.txt', '/cms/logs/my_own_log.txt'];
      *
      * // Array superglobals to dump automatically, add each superglobal, but not $GLOBALS
-     * $options['dump_super_globals'] = array('$_GET', '$_POST', '$_COOKIE', '$_SESSION');
+     * $options['dump_super_globals'] = ['$_GET', '$_POST', '$_COOKIE', '$_SESSION'];
      *
-     * // Flag to ignore dumpoutput of empty superglobals
+     * // Flag to ignore dump output of empty superglobals
      * $options['ignore_empty_superglobals'] = true;
      *
      * // Maximum allowed superglobal size in KB (used for $_POST and $_SESSION)
@@ -192,7 +171,7 @@ class mpDebug
      * // Magic word to use, if you want to overwrite $options['enable'] option. You can force debugging
      * // by using this option. In this case, you can enable it adding the parameter
      * // magic_word={my_magic_word} to the URL, e. g.
-     * // http://domain.tld/mypage.php?magic_word={my_magic_word}
+     * // https://domain.tld/mypage.php?magic_word={my_magic_word}
      * // After then debugging will be enabled for the next 1 hour (set by cookie)
      * $options['magic_word'] = 'foobar';
      *
@@ -210,7 +189,7 @@ class mpDebug
             $this->_enable = (bool) $options['enable'];
         }
 
-        if (isset($options['magic_word'])){
+        if (isset($options['magic_word'])) {
             // debug enable check with magic_word send by request
             $cookieVal = md5($options['magic_word']);
             if (isset($_GET['magic_word']) == $options['magic_word']) {
@@ -219,8 +198,8 @@ class mpDebug
             } elseif (isset($_COOKIE['mpDebug_mw']) && $_COOKIE['mpDebug_mw'] == $cookieVal) {
                 $this->_enable = true;
             }
-        } elseif (isset($options['user_func']) && is_function($options['user_func'])) {
-            // debug enable check with userdefined function
+        } elseif (isset($options['user_func']) && is_callable($options['user_func'])) {
+            // debug enable check with user defined function
             $this->_enable = call_user_func($options['user_func']);
         }
 
@@ -252,9 +231,9 @@ class mpDebug
      * @param   mixed   $var     Variable 2 dump content
      * @param   string  $source  Name of source
      * @param   bool    $print   Flag to print out dump result
-     * @return  mixed   Content of var, if its not to print
+     * @return  mixed|void   Content of var, if its not to print
      */
-    public function vdump($var, $source='', $print=true)
+    public function vdump($var, $source = '', $print = true)
     {
         if ($this->_enable == false) {
             return;
@@ -283,9 +262,9 @@ class mpDebug
      * @param   string  $line    Line (e. g. __LINE__) to specifiy the line number
      * @return  void
      */
-    public function addVdump($var, $name, $source=null, $line=null)
+    public function addVdump($var, $name, $source = null, $line = null)
     {
-        if ($this->_enable == false) {
+        if ($this->_enable === false) {
             return;
         }
 
@@ -302,9 +281,9 @@ class mpDebug
      * @param   string  $line    Line (e. g. __LINE__) to specifiy the line number
      * @return  void
      */
-    public function addDebug($var, $name, $source=null, $line=null)
+    public function addDebug($var, $name, $source = null, $line = null)
     {
-        if ($this->_enable == false) {
+        if ($this->_enable === false) {
             return;
         }
 
@@ -323,7 +302,7 @@ class mpDebug
      */
     private function _addDebugValue($var, $name, $source, $line)
     {
-        if ($this->_enable == false) {
+        if ($this->_enable === false) {
             return;
         }
         if ($source !== null) {
@@ -349,11 +328,11 @@ class mpDebug
      * Returns or prints the mpWebDebug bar depending on state of $print
      *
      * @param   bool   $print  Flag to print the mpWebDebug bar
-     * @return  mixed  The mpWebDebug bar if $print is set to false or nothing
+     * @return  mixed|void  The mpWebDebug bar if $print is set to false or nothing
      */
-    public function getResults($print=true)
+    public function getResults($print = true)
     {
-        if ($this->_enable == false) {
+        if ($this->_enable === false) {
             return;
         }
 
@@ -376,7 +355,7 @@ class mpDebug
 
         // dump cache
         foreach ($this->_dumpCache as $p => $v) {
-            $info = array();
+            $info = [];
             if ($v['source'] !== null) {
                 $info[] = 'source: ' . $v['source'];
             }
@@ -396,7 +375,7 @@ class mpDebug
         $dumpOutput .= '
 <span class="info"><br />
     NOTE: This debug output should be visible only on dev environment<br />
-    &copy; Murat Purc 2008-2010 &bull; <a href="http://www.purc.de/">www.purc.de</a>
+    &copy; Murat Purç 2008-2019 &bull; <a href="http://www.purc.de/">www.purc.de</a>
 </span>';
         $dumpOutput .= $this->_endOutput();
 
@@ -413,11 +392,11 @@ class mpDebug
      *
      * @param   string  $content  Data to decorate with comment
      * @param   bool    $print    Flag to print the result
-     * @return  mixed   The composed result or nothing if is to print
+     * @return  mixed|void   The composed result or nothing if is to print
      */
-    public function comment($content, $print=true)
+    public function comment($content, $print = true)
     {
-        if ($this->_enable == false) {
+        if ($this->_enable === false) {
             return;
         }
 
@@ -451,14 +430,14 @@ class mpDebug
         $alreadyDelivered = true;
 
         $code = '
-<style type="text/css"><!--
-#mpWebDebug {position:absolute;z-index:1000;width:100%;right:0;top:0;font-size:12px;font-family:arial;text-align:left;}
+<style type="text/css">
+#mpWebDebug {position:absolute;z-index:1000;width:100%;right:0;top:0;font-size:12px;font-family:arial,serif;text-align:left;}
 #mpWebDebug #webDebugAnchorBox {padding:2px;background:transparent;}
 #mpWebDebug .anchor {font-weight:bold;font-size:0.8em;color:#52bd22;margin:0;padding:0.3em;background:#575555;}
-#mpWebDebug .anchor a {font-weight:bold;font-family:arial;color:#52bd22;}
+#mpWebDebug .anchor a {font-weight:bold;font-family:arial,serif;color:#52bd22;}
 #mpWebDebug #webDebugBox {margin-top:18px;padding:5px;position:absolute;left:0;top:0;background-color:#dadada;border:1px black solid;width:99%;overflow:auto;}
 #mpWebDebug .iN {margin:0.3em 0; background:transparent;} /* iN = item name */
-#mpWebDebug .iN a, #mpWebDebug .iN a:hover {display:block;font-size:9pt;font-family:arial;font-weight:bold;color:black;background:transparent;background:#cacaca;}
+#mpWebDebug .iN a, #mpWebDebug .iN a:hover {display:block;font-size:9pt;font-family:arial,serif;font-weight:bold;color:black;background:#cacaca;}
 #mpWebDebug .iN a:hover, #mpWebDebug .iN a.open {background:#bababa;}
 #mpWebDebug .anchor a:focus, #mpWebDebug .iN a:focus {outline:0;}
 #mpWebDebug .iI {text-decoration:underline;} /* iI = item info */
@@ -466,16 +445,16 @@ class mpDebug
 #mpWebDebug .nV {display:none;} /* nV = not visible */
 #mpWebDebug .info {color:#007f46;font-size:11px;}
 #mpWebDebug pre {margin:0;color:#000;}
-// --></style>
-<script type="text/javascript"><!--//<![CDATA[
+</style>
+<script type="text/javascript">
 var mpWebDebug = {
     _toggle: [],
     toggle: function(id, obj) {
         var displayVal;
-        if (typeof(this._toggle[id]) == "undefined") {
+        if (typeof(this._toggle[id]) === "undefined") {
             displayVal = "block";
         } else {
-            displayVal = (this._toggle[id] == "block") ? "none" : "block";
+            displayVal = (this._toggle[id] === "block") ? "none" : "block";
         }
         try {
             var elem = document.getElementById(id);
@@ -491,11 +470,11 @@ var mpWebDebug = {
         var cn = elem.className.split(" ");
         var pos = elem.className.search(/open/);
         var newCn = [];
-        if (style == "block" && pos == -1) {
+        if (style === "block" && pos === -1) {
             newCn = cn;
             newCn.push("open");
-        } else if (style == "none" && pos > -1) {
-            for (var i=0; i<cn.length; i++) {
+        } else if (style === "none" && pos > -1) {
+            for (var i = 0; i < cn.length; i++) {
                 if (cn[i] !== "open") {
                     newCn.push(cn[i]);
                 }
@@ -506,7 +485,7 @@ var mpWebDebug = {
         elem.className = newCn.join(" ");
     }
 }
-//]]>--></script>
+</script>
 ';
         return $code;
     }
@@ -545,7 +524,7 @@ var mpWebDebug = {
      * @param   string  $info  Info about the variable
      * @return  string  Container with debug info about the variable
      */
-    private function _contentOutput($name, $var, $info=null)
+    private function _contentOutput($name, $var, $info = null)
     {
         $id = $this->_nextId();
 
@@ -588,35 +567,35 @@ var mpWebDebug = {
     /**
      * Creates list of linked ressource files. The result will be added to mpWebDebug.
      *
-     * @return  string
+     * @return  string|void
      */
     private function _getRessourceLinks()
     {
         if (!is_array($this->_resUrls)) {
             return;
         }
-        $reslinks = '';
+        $resLinks = '';
         foreach ($this->_resUrls as $p => $url) {
             if (is_readable($this->_docRoot . $url)) {
-                $reslinks .= '
+                $resLinks .= '
     <li><a href="' . $url . '" onclick="window.open(this.href);return false;">' . $url . '</a></li>
 ';
             }
         }
-        if ($reslinks !== '') {
+        if ($resLinks !== '') {
             $id = $this->_nextId();
-            $reslinks = '
+            $resLinks = '
 <div class="iN">
     <a href="#" onclick="mpWebDebug.toggle(\'' . $id. '\', this);return false;">&diams; Ressource Links</a>
 </div>
 <div id="' . $id . '" class="nV">
     <ul style="padding:0;">
-    ' . $reslinks . '
+    ' . $resLinks . '
     </ul>
 </div>
 ';
         }
-        return $reslinks;
+        return $resLinks;
     }
 
 
@@ -724,13 +703,13 @@ var mpWebDebug = {
     /**
      * Returns approximate size of superglobal in kb if size is > defined max superglobal size or false
      *
-     * @param   mixed  $sglobal
+     * @param   mixed  $superGlobal
      * @return  mixed  Size in kb or false
      */
-    private function _superGlobalTooBig(&$sglobal)
+    private function _superGlobalTooBig(&$superGlobal)
     {
         // simple check of variable size
-        $dump = print_r($sglobal, true);
+        $dump = print_r($superGlobal, true);
         $dump = preg_replace("/\n +/", '', $dump);
         $sizeInKB = ceil((strlen($dump) / 1024));
         if ($sizeInKB > $this->_maxSuperglobalSize) {
