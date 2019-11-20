@@ -125,6 +125,11 @@ class Debugger
      */
     private $_maxSuperglobalSize = 512;
 
+    /**
+     * Flag about already delivered CSS & JS code.
+     * @var  bool
+     */
+    private $_cssJsCodeAlreadyDelivered = false;
 
     /**
      * Constructor
@@ -413,21 +418,18 @@ class Debugger
      * Returns the code (CSS-/ and JavaScript part) for the mpDebugBar, which can be placed inside
      * the head-Tag.
      *
-     * Prevents multiple delivering of the code using a static variable. Only the first call will
-     * return the code.
+     * Prevents multiple delivering of the code, only the first call will return the code.
      *
      * @return  string  CSS-/JS-Code of mpWebDebug bar
      */
     public function getCssJsCode()
     {
-        static $alreadyDelivered;
-
-        if (isset($alreadyDelivered)) {
+        if ($this->_cssJsCodeAlreadyDelivered) {
             // code for head tag is to deliver once, and it was already delivered, return empty string
             return '';
         }
 
-        $alreadyDelivered = true;
+        $this->_cssJsCodeAlreadyDelivered = true;
 
         $code = '
 <style type="text/css">
@@ -720,7 +722,7 @@ var mpWebDebug = {
     }
 
 
-	/**
+    /**
      * Creates a unique id used as id-Attribute for HTML elements using timer and internal counter.
      *
      * @return  string  Generated id
